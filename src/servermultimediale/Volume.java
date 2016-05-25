@@ -39,7 +39,7 @@ public class Volume implements Runnable {
         try {
             String buffer = socketIN.readLine();
             ProcessBuilder pb = new ProcessBuilder("sh", "-c","amixer set PCM "+buffer+"%");
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile)));
+            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
             Process p = pb.start();
             socketIN.close();
             System.out.println("amixer set PCM "+buffer+"%");

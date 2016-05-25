@@ -33,9 +33,9 @@ public class UpdateList implements Runnable{
         {
             try {
                 ProcessBuilder pb = new ProcessBuilder("sh", "-c",command());
-                pb.directory(new File(ServerMultimediale.musicPath));
-                pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile)));
-                pb.redirectOutput(new File(ServerMultimediale.musicLibrary));
+                pb.directory(new File(ServerMultimediale.musicPath.toString()));
+                pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
+                pb.redirectOutput(new File(ServerMultimediale.musicLibrary.toString()));
                 Process p = pb.start();
                 p.waitFor();
                 System.out.println(p.exitValue() == 0 ? "Playlist aggiornata con successo" : "Errore nell'aggiornamento della playlist");

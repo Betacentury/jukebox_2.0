@@ -30,8 +30,9 @@ public class Brano {
     
     public Brano(String _path)
     {
-        Path tmp = Paths.get(_path);
-        path = Files.exists(tmp) ? tmp : null;
+//        Path tmp = Paths.get(_path);
+//        path = Files.exists(tmp) ? tmp : null;
+        path = Paths.get(_path);
     }
     @Override
     public String toString()

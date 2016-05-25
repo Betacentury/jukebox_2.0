@@ -41,7 +41,7 @@ public class Coda implements Runnable {
     {
         try {
             ProcessBuilder pb = new ProcessBuilder("sh", "-c","cat "+ServerMultimediale.musicLibrary+" | wc -l");
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile)));
+            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
             Process p = pb.start();
             BufferedReader stdin = new BufferedReader(new InputStreamReader(p.getInputStream()));
             return Integer.parseInt(stdin.readLine());
@@ -54,7 +54,7 @@ public class Coda implements Runnable {
     {
         try {
             ProcessBuilder pb = new ProcessBuilder("sh", "-c","head -"+_i+" "+ServerMultimediale.musicLibrary+" | tail -1");
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile)));
+            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
             Process p = pb.start();
             BufferedReader stdin = new BufferedReader(new InputStreamReader(p.getInputStream()));
             return new Brano(stdin.readLine());

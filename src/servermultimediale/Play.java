@@ -38,9 +38,9 @@ public class Play implements Runnable {
         try {
             System.out.println("Riproduzione di: "+brano);
             ProcessBuilder pb = new ProcessBuilder("sh", "-c","mplayer \""+brano.getPath()+"\"");
-            pb.directory(new File(ServerMultimediale.musicPath));
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile)));
-            pb.redirectOutput(new File(ServerMultimediale.lastPlay));
+            pb.directory(new File(ServerMultimediale.musicPath.toString()));
+            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
+            pb.redirectOutput(new File(ServerMultimediale.lastPlay.toString()));
             Process p = pb.start();
             p.waitFor();
             System.out.println( brano + (p.exitValue() == 0 ? " riprodotto con successo" : " - errore nella riproduzione") );

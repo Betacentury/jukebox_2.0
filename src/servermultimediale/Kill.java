@@ -31,9 +31,9 @@ public class Kill implements Runnable{
     public void run() {
         try {
             ProcessBuilder pb = new ProcessBuilder("sh", "-c","kill `pidof mplayer`");
-            pb.directory(new File(ServerMultimediale.musicPath));
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile)));
-            pb.redirectOutput(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile)));
+            pb.directory(new File(ServerMultimediale.musicPath.toString()));
+            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
+            pb.redirectOutput(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
             Process p = pb.start();
             p.waitFor();
             System.out.println("killall mplayer");

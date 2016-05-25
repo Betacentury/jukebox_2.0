@@ -23,6 +23,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
@@ -32,11 +34,11 @@ import java.util.ArrayList;
 public class ServerMultimediale {
 
     protected static final int PORT = 54637;
-    protected static final String musicPath = "./music",
-            logFile = "/tmp/log",
-            musicLibrary = "/tmp/list",
-            lastPlay = "/tmp/nowPlaying",
-            version = "1.0";
+    protected static final Path musicPath = Paths.get("./music"),
+            logFile = Paths.get("/tmp/log"),
+            musicLibrary = Paths.get("/tmp/list"),
+            lastPlay = Paths.get("/tmp/nowPlaying");
+    protected static final String version = "1.0";
     protected static final String [] estensioni = {"mp3","mp4","m4a","ogg"};
     protected final static ArrayList<Brano> playlist = new ArrayList<>();
 

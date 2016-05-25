@@ -50,7 +50,7 @@ class ShareList implements Runnable {
             String buffer = mode == LIST ? socketIN.readLine() : null;
             System.out.println("Esecuzione " + cmd(buffer));
             ProcessBuilder pb = new ProcessBuilder("sh", "-c",cmd(buffer));
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile)));
+            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
             Process p = pb.start();
             BufferedReader stdin = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
