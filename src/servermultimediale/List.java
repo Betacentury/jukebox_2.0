@@ -41,9 +41,9 @@ class List implements Runnable {
         switch (cmd)
         {
             case LIST:
-                for (int i=0; i<ServerMultimediale.playlist.size(); i++)
+                for (Brano b : ServerMultimediale.playlist)
                 {
-                    socketOUT.println(ServerMultimediale.playlist.get(i).getPath());
+                    socketOUT.println(b.getPath());
                     socketOUT.flush();
                 }
                 break;

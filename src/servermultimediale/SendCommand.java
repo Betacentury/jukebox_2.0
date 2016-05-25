@@ -67,10 +67,10 @@ class SendCommand implements Runnable {
             System.out.println(cmd);
             socketOUT.println(cmd);
             socketOUT.flush();
-            for (int i=0; i<value.length && value[i] != null ; i++ ) 
+            for (String s : value) 
             {
-                System.out.println(value[i]);
-                socketOUT.println(value[i]);
+                System.out.println(s);
+                socketOUT.println(s);
                 socketOUT.flush();
             }
             while( ascolta(cmd) && (buffer = socketIN.readLine()) != null )
@@ -85,9 +85,9 @@ class SendCommand implements Runnable {
     private static boolean ascolta (String _cmd) {
         switch (_cmd.toLowerCase())
         {
-            case "get":
-            case "list":
-            case "last":
+            case GET:
+            case LIST:
+            case LAST:
                 return true;
             default:
                 return false;
