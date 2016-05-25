@@ -17,6 +17,7 @@
 package servermultimediale;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -31,9 +32,6 @@ public class Shuffle implements Runnable{
 
     @Override
     public void run() {
-        for (int i=0; i<al.size(); i++) {
-            al.add(0, al.remove((int)(Math.random()*al.size())) );
-        }
+        Collections.shuffle(al);
     }
-    
 }
