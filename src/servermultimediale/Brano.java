@@ -16,29 +16,30 @@
  */
 package servermultimediale;
 
+import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.nio.file.Files;
+
 /**
  *
  * @author betacentury
  */
 public class Brano {
     
-    private final String path;
+    private final Path path;
     
     public Brano(String _path)
     {
-        path = _path;
+        Path tmp = Paths.get(_path);
+        path = Files.exists(tmp) ? tmp : null;
     }
     @Override
     public String toString()
     {
-        if ( path != null ) {
-            String split[] = path.split("/");
-            return split[split.length-1];
-        }
-        return null;
+        return path != null ? path.getFileName().toString() : null;
     }
     public String getPath()
     {
-        return path;
+        return path != null ? path.toString() : null;
     }
 }
