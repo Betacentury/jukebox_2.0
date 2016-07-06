@@ -47,25 +47,25 @@ public class AggiungiAllaPlaylist implements Runnable {
             //System.out.println(socket.toString() + "\t" + buffer);
             while ( (buffer = socketIN.readLine()) != null)
             {
-                Brano brano = new Brano ( buffer );
+                Piece brano = new Piece ( buffer );
                 switch (add)
                 {
                     case ADD:
-                        ServerMultimediale.playlist.add( brano );
-                        System.out.println("aggiunta di "+brano+" alla posizione "+ServerMultimediale.playlist.indexOf(brano));
-                        break;
-                    case REMOVE:
-                        remove(brano);
+                        int i;
+                        if ( ( i = Coda.addPiece(brano) ) > -1 )
+                            System.out.println("aggiunta di "+brano+" alla posizione "+i);
                         break;
                     case TOP:
-                        ServerMultimediale.playlist.add( 0, remove(brano) );
+                        Coda.addPiece( 0, brano );
+                    case REMOVE:
+                        Coda.remove(brano);
                         break;
                     default:
                         break;
                 }
             }
             System.out.println("Stato della coda: " + (nowPlaying != null ? nowPlaying.getState() : "null") );
-            if (nowPlaying == null || nowPlaying.getState() == Thread.State.TERMINATED)
+            if (nowPlaying == null || nowPlaying.getState() != Thread.State.WAITING)
             {
                 nowPlaying = new Thread(new Coda());
                 nowPlaying.start();
@@ -77,17 +77,5 @@ public class AggiungiAllaPlaylist implements Runnable {
             Logger.getLogger(ServerMultimediale.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-    }
-    private static Brano remove(Brano _brano)
-    {
-        for (int i=ServerMultimediale.playlist.size()-1; i>-1; i--)
-        {
-            if (ServerMultimediale.playlist.get(i).getPath().equals(_brano.getPath()))
-            {
-                System.out.println(_brano.toString() + " rimosso dalla playlist alla posizione "+i);
-                return ServerMultimediale.playlist.remove(i);
-            }
-        }
-        return null;
     }
 }

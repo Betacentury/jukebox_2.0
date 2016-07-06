@@ -18,6 +18,8 @@ package servermultimediale;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,28 +29,29 @@ import java.util.logging.Logger;
  */
 public class Play implements Runnable {
 
-    private final Brano brano;
+    private static Piece nowPlaying;
+    private final static Path LASTPLAY = Paths.get("/tmp/nowPlaying");
     
-    public Play(Brano _brano) {
-        brano = _brano;
+    public Play(Piece _brano) {
+        nowPlaying = _brano;
     }
 
     @Override
     public void run() {
         try {
-            System.out.println("Riproduzione di: "+brano);
-            ProcessBuilder pb = new ProcessBuilder("sh", "-c","mplayer \""+brano.getPath()+"\"");
-            pb.directory(new File(ServerMultimediale.musicPath.toString()));
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
-            pb.redirectOutput(new File(ServerMultimediale.lastPlay.toString()));
+            System.out.println("Riproduzione di: "+nowPlaying);
+            ProcessBuilder pb = new ProcessBuilder("sh", "-c","mplayer \""+nowPlaying.getPath()+"\"");
+            pb.directory(new File(ServerMultimediale.MUSICPATH.toString()));
+            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.LOGFILE.toString())));
+            pb.redirectOutput(new File(LASTPLAY.toString()));
             Process p = pb.start();
             p.waitFor();
-            System.out.println( brano + (p.exitValue() == 0 ? " riprodotto con successo" : " - errore nella riproduzione") );
+            System.out.println(nowPlaying + (p.exitValue() == 0 ? " riprodotto con successo" : " - errore nella riproduzione") );
         } catch (IOException ex) {
             Logger.getLogger(ShareList.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(Play.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+    public static Piece nowPlaying() { return nowPlaying; }
 }

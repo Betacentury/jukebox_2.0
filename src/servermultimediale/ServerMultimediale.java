@@ -25,7 +25,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -34,17 +35,14 @@ import java.util.ArrayList;
 public class ServerMultimediale {
 
     protected static final int PORT = 54637;
-    protected static final Path musicPath = Paths.get("./music"),
-            logFile = Paths.get("/tmp/log"),
-            musicLibrary = Paths.get("/tmp/list"),
-            lastPlay = Paths.get("/tmp/nowPlaying");
-    protected static final String version = "1.0";
-    protected static final String [] estensioni = {"mp3","mp4","m4a","ogg"};
-    protected final static ArrayList<Brano> playlist = new ArrayList<>();
+    protected static final Path MUSICPATH = Paths.get("./music"),
+            LOGFILE = Paths.get("/tmp/log");
+    protected static final String VERSION = "1.0";
+    protected static final String [] ESTENSIONI = {"mp3","mp4","m4a","ogg"};
+    //protected final static ArrayList<Piece> playlist = new ArrayList<>();
 
     public static void main(String args[]) {
-        
-        new Thread(new UpdateList() ).start();
+        MusicLibrary.getInstance();
         new Thread(new BeaconServer()).start();
         
         ServerSocket serverSocket = null;
@@ -52,13 +50,13 @@ public class ServerMultimediale {
 
         try {
             serverSocket = new ServerSocket(PORT);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            Logger.getLogger(ServerMultimediale.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println(serverSocket);
-        if (Coda.autopilota)
+        if (Coda.AUTOPILOTA)
         {
-            new SendCommand(SendCommand.PLAY, "").run();
+            new SendCommand(SendCommand.PLAY, MusicLibrary.getInstance().randomPiece().getPath() ).run();
         }
         while (serverSocket != null) {
             try {
@@ -95,7 +93,12 @@ public class ServerMultimediale {
                         new Thread(new ShareList( socketIN, socketOUT, ShareList.LAST ) ).start();
                         break;
                     case "shuffle":
-                        new Thread(new Shuffle(playlist) ).start();
+                        new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Coda.shuffle();
+                    }
+                } ).start();
                     default:
                         socket.close();
                         break;

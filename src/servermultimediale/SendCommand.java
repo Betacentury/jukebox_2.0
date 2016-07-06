@@ -33,13 +33,13 @@ import java.util.logging.Logger;
 class SendCommand implements Runnable {
     
     private final String cmd,value[];
-    private final ArrayList<Brano> al;
+    private final ArrayList<Piece> al;
     protected final static String PLAY = "play", REMOVE = "remove", TOP = "top", KILL = "kill", VOLUME = "volume", SHUFFLE = "shuffle", GET = "get", LIST = "list", LAST = "last";
     
     public SendCommand(String _cmd) {
         this(_cmd,(String)null);
     }
-        public SendCommand(String _cmd, ArrayList<Brano> _al) {
+        public SendCommand(String _cmd, ArrayList<Piece> _al) {
         this(_cmd,(String)null, _al);
     }
     public SendCommand(String _cmd, String _value) {
@@ -48,10 +48,10 @@ class SendCommand implements Runnable {
     public SendCommand(String _cmd, String[] _value) {
         this(_cmd, _value, null);
     }
-    public SendCommand(String _cmd, String _value, ArrayList<Brano> _al) {
+    public SendCommand(String _cmd, String _value, ArrayList<Piece> _al) {
         this(_cmd,new String[] { _value }, _al);
     }
-    public SendCommand(String _cmd, String[] _value, ArrayList<Brano> _al) {
+    public SendCommand(String _cmd, String[] _value, ArrayList<Piece> _al) {
         cmd = _cmd;
         value =  _value;
         al = _al;
@@ -75,7 +75,7 @@ class SendCommand implements Runnable {
             }
             while( ascolta(cmd) && (buffer = socketIN.readLine()) != null )
             {
-                al.add(new Brano(buffer));
+                al.add(new Piece(buffer));
             }
             socket.close();
         } catch (IOException ex) {

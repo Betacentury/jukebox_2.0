@@ -19,16 +19,17 @@ package servermultimediale;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.nio.file.Files;
+import java.util.Objects;
 
 /**
  *
  * @author betacentury
  */
-public class Brano {
+public class Piece {
     
     private final Path path;
     
-    public Brano(String _path)
+    public Piece(String _path)
     {
 //        Path tmp = Paths.get(_path);
 //        path = Files.exists(tmp) ? tmp : null;
@@ -42,5 +43,18 @@ public class Brano {
     public String getPath()
     {
         return path != null ? path.toString() : null;
+    }
+    @Override
+    public boolean equals(Object _o){
+        return _o instanceof Piece ? equals((Piece)_o) : false;
+    }
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.path);
+        return hash;
+    }
+    public boolean equals(Piece _o) {
+        return path.equals(_o.path);
     }
 }

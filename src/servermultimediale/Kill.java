@@ -31,14 +31,14 @@ public class Kill implements Runnable{
     public void run() {
         try {
             ProcessBuilder pb = new ProcessBuilder("sh", "-c","kill `pidof mplayer`");
-            pb.directory(new File(ServerMultimediale.musicPath.toString()));
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
-            pb.redirectOutput(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
+            pb.directory(new File(ServerMultimediale.MUSICPATH.toString()));
+            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.LOGFILE.toString())));
+            pb.redirectOutput(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.LOGFILE.toString())));
             Process p = pb.start();
             p.waitFor();
             System.out.println("killall mplayer");
-        } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(UpdateList.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException | IOException ex) {
+            Logger.getLogger(Kill.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

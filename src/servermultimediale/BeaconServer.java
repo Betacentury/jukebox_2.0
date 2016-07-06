@@ -24,6 +24,21 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
 
 /**
  *
@@ -44,7 +59,7 @@ public class BeaconServer implements Runnable{
         
         while (serverSocket != null) {
             try {
-                sendData = new NetConfig("Vaddacavadda", ServerMultimediale.version, ServerMultimediale.PORT).toString().getBytes();
+                sendData = new NetConfig("Vaddacavadda", ServerMultimediale.VERSION, ServerMultimediale.PORT).toString().getBytes();
                 DatagramPacket sendPacket =
                 new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), 8000);
                 serverSocket.send(sendPacket);

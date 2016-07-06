@@ -17,10 +17,9 @@
 package servermultimediale;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,51 +46,24 @@ class ShareList implements Runnable {
     @Override
     public void run() {
         try {
-            String buffer = mode == LIST ? socketIN.readLine() : null;
-            System.out.println("Esecuzione " + cmd(buffer));
-            ProcessBuilder pb = new ProcessBuilder("sh", "-c",cmd(buffer));
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
-            Process p = pb.start();
-            BufferedReader stdin = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            while( (buffer = stdin.readLine()) != null )
-            {
-                System.out.println("\t"+buffer);
-                socketOUT.println(buffer);
-                socketOUT.flush();
+            switch (mode){
+                case LIST:
+                    Collection<Piece> pieces = MusicLibrary.getInstance().find(socketIN.readLine());
+                    for (Piece p: pieces){
+                        System.out.println("\t"+p.getPath());
+                        socketOUT.println(p.getPath());
+                        socketOUT.flush();
+                    }
+                    break;
+                case LAST:
+                        socketOUT.println(Coda.getLast().getPath());
+                        socketOUT.flush();
+                    break;
             }
-            p.waitFor();
             socketIN.close();
             socketOUT.close();
-        } catch (IOException | InterruptedException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(ShareList.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    private String cmd(String buffer)
-    {
-        StringBuilder out = new StringBuilder("cat ");
-        switch (mode)
-        {
-            case LIST:
-                out.append(ServerMultimediale.musicLibrary).append(" | grep -i \"").append(buffer != null ? buffer : "").append("\" | sort");
-                break;
-            case LAST:
-                out.append(ServerMultimediale.lastPlay).append(regex());
-                break;
-            default:
-                break;
-        }
-        return out.toString();
-    }
-    private static String regex()
-    {
-        StringBuilder out = new StringBuilder(" | grep \"^Playing.*$\" | grep -o \"[.]/.*[");
-        for (int i=0; i<ServerMultimediale.estensioni.length; i++)
-        {
-            out.append(ServerMultimediale.estensioni[i]).append( (i+1<ServerMultimediale.estensioni.length)?"\\|":"" );
-        }
-        out.append("]\"");
-        System.out.println(out.toString());
-        return out.toString();
     }
 }

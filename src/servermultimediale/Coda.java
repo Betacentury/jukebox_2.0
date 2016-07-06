@@ -16,12 +16,9 @@
  */
 package servermultimediale;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -29,42 +26,22 @@ import java.util.logging.Logger;
  */
 public class Coda implements Runnable {
     
-    protected final static boolean autopilota = true;
+    protected final static boolean AUTOPILOTA = true;
+    private final static ArrayList<Piece> PLAYLIST = new ArrayList<>();
+    
     @Override
     public void run() {
-        while (ServerMultimediale.playlist.size() > 0 || autopilota)
+        while (PLAYLIST.size() > 0 || AUTOPILOTA)
         {
-            new Play( ServerMultimediale.playlist.size() > 0 ? ServerMultimediale.playlist.remove(0) : randomMusic() ).run();
+            new Play( PLAYLIST.size() > 0 ? PLAYLIST.remove(0) : MusicLibrary.getInstance().randomPiece() ).run();
         }
     }
-    private static int dimLibrary()
-    {
-        try {
-            ProcessBuilder pb = new ProcessBuilder("sh", "-c","cat "+ServerMultimediale.musicLibrary+" | wc -l");
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
-            Process p = pb.start();
-            BufferedReader stdin = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            return Integer.parseInt(stdin.readLine());
-        } catch (IOException ex) {
-            Logger.getLogger(Coda.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return -1;
-    }
-    private static Brano atIndex(int _i)
-    {
-        try {
-            ProcessBuilder pb = new ProcessBuilder("sh", "-c","head -"+_i+" "+ServerMultimediale.musicLibrary+" | tail -1");
-            pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.logFile.toString())));
-            Process p = pb.start();
-            BufferedReader stdin = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            return new Brano(stdin.readLine());
-        } catch (IOException ex) {
-            Logger.getLogger(Coda.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return new Brano(null);
-    }
-    private static Brano randomMusic()
-    {
-        return atIndex((int) (Math.random()*dimLibrary()));
-    }
+    public static Piece getLast() { return Play.nowPlaying() ; }
+    public static synchronized boolean addPiece(Collection <Piece> _add){ return PLAYLIST.addAll(_add); }
+    public static synchronized int addPiece(Piece _add){ return PLAYLIST.add(_add) ? PLAYLIST.size() : -1 ; }
+    public static synchronized void addPiece(int _i, Piece _add){ PLAYLIST.add(_i , _add); }
+    public static synchronized void shuffle(){ Collections.shuffle(PLAYLIST); }
+    public static synchronized void remove(Collection <Piece> _remove){ PLAYLIST.removeAll(_remove); }
+    public static synchronized Piece remove(Piece _brano) { return PLAYLIST.remove(PLAYLIST.lastIndexOf(_brano)); }
+    public static synchronized Collection<Piece> getPlaylist() { return PLAYLIST; }
 }

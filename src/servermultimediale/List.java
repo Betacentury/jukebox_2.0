@@ -41,7 +41,7 @@ class List implements Runnable {
         switch (cmd)
         {
             case LIST:
-                for (Brano b : ServerMultimediale.playlist)
+                for (Piece b : Coda.getPlaylist())
                 {
                     socketOUT.println(b.getPath());
                     socketOUT.flush();
@@ -52,5 +52,4 @@ class List implements Runnable {
         }
         socketOUT.close();
     }
-    
 }
