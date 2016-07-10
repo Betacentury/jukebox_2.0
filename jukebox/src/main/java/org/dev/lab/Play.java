@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package servermultimediale;
+package org.dev.lab;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,25 +27,31 @@ import java.util.logging.Logger;
  *
  * @author betacentury
  */
-public class Volume implements Runnable {
+public class Play implements Runnable {
 
-    private final BufferedReader socketIN;
+    private static Piece nowPlaying;
+    private final static Path LASTPLAY = Paths.get("/tmp/nowPlaying");
     
-    public Volume(BufferedReader _socketIN) {
-        socketIN = _socketIN;
+    public Play(Piece _brano) {
+        nowPlaying = _brano;
     }
 
     @Override
     public void run() {
         try {
-            String buffer = socketIN.readLine();
-            ProcessBuilder pb = new ProcessBuilder("sh", "-c","amixer set PCM "+buffer+"%");
+            System.out.println("Riproduzione di: "+nowPlaying);
+            ProcessBuilder pb = new ProcessBuilder("sh", "-c","mplayer \""+nowPlaying.getPath()+"\"");
+            pb.directory(new File(ServerMultimediale.MUSICPATH.toString()));
             pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.LOGFILE.toString())));
+            pb.redirectOutput(new File(LASTPLAY.toString()));
             Process p = pb.start();
-            socketIN.close();
-            System.out.println("amixer set PCM "+buffer+"%");
+            p.waitFor();
+            System.out.println(nowPlaying + (p.exitValue() == 0 ? " riprodotto con successo" : " - errore nella riproduzione") );
         } catch (IOException ex) {
-            Logger.getLogger(Volume.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ShareList.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Play.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static Piece nowPlaying() { return nowPlaying; }
 }

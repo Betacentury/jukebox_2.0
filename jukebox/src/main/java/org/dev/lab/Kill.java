@@ -14,12 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package servermultimediale;
+package org.dev.lab;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,31 +25,20 @@ import java.util.logging.Logger;
  *
  * @author betacentury
  */
-public class Play implements Runnable {
-
-    private static Piece nowPlaying;
-    private final static Path LASTPLAY = Paths.get("/tmp/nowPlaying");
-    
-    public Play(Piece _brano) {
-        nowPlaying = _brano;
-    }
+public class Kill implements Runnable{
 
     @Override
     public void run() {
         try {
-            System.out.println("Riproduzione di: "+nowPlaying);
-            ProcessBuilder pb = new ProcessBuilder("sh", "-c","mplayer \""+nowPlaying.getPath()+"\"");
+            ProcessBuilder pb = new ProcessBuilder("sh", "-c","kill `pidof mplayer`");
             pb.directory(new File(ServerMultimediale.MUSICPATH.toString()));
             pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.LOGFILE.toString())));
-            pb.redirectOutput(new File(LASTPLAY.toString()));
+            pb.redirectOutput(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.LOGFILE.toString())));
             Process p = pb.start();
             p.waitFor();
-            System.out.println(nowPlaying + (p.exitValue() == 0 ? " riprodotto con successo" : " - errore nella riproduzione") );
-        } catch (IOException ex) {
-            Logger.getLogger(ShareList.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Play.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("killall mplayer");
+        } catch (InterruptedException | IOException ex) {
+            Logger.getLogger(Kill.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static Piece nowPlaying() { return nowPlaying; }
 }

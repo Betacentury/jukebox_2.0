@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package servermultimediale;
+package org.dev.lab;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -23,6 +23,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import static java.lang.Thread.sleep;
 
 /**

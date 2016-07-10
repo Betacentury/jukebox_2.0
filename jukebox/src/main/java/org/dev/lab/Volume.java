@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package servermultimediale;
+package org.dev.lab;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -25,20 +26,25 @@ import java.util.logging.Logger;
  *
  * @author betacentury
  */
-public class Kill implements Runnable{
+public class Volume implements Runnable {
+
+    private final BufferedReader socketIN;
+    
+    public Volume(BufferedReader _socketIN) {
+        socketIN = _socketIN;
+    }
 
     @Override
     public void run() {
         try {
-            ProcessBuilder pb = new ProcessBuilder("sh", "-c","kill `pidof mplayer`");
-            pb.directory(new File(ServerMultimediale.MUSICPATH.toString()));
+            String buffer = socketIN.readLine();
+            ProcessBuilder pb = new ProcessBuilder("sh", "-c","amixer set PCM "+buffer+"%");
             pb.redirectError(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.LOGFILE.toString())));
-            pb.redirectOutput(ProcessBuilder.Redirect.appendTo(new File(ServerMultimediale.LOGFILE.toString())));
             Process p = pb.start();
-            p.waitFor();
-            System.out.println("killall mplayer");
-        } catch (InterruptedException | IOException ex) {
-            Logger.getLogger(Kill.class.getName()).log(Level.SEVERE, null, ex);
+            socketIN.close();
+            System.out.println("amixer set PCM "+buffer+"%");
+        } catch (IOException ex) {
+            Logger.getLogger(Volume.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package servermultimediale;
+package org.dev.lab;
 
-import java.nio.file.Paths;
 import java.nio.file.Path;
-import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
